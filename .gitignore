@@ -1,0 +1,29 @@
+# Secrets and local app data (never commit these)
+credentials.json
+token.json
+config.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Build output
+build/
+dist/
+*.spec.bak
+
+# OS and editor
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+*.vsix
+
+# Logs
+*.log
