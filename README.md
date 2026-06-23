@@ -148,6 +148,8 @@ During upload, the menu shows progress like `Uploading 2026-06-15-16-07-32.zip (
 
 Uploads appear in a folder called **`GTNH Backups`** in your Google Drive. You can rename this in `config.json` (`drive_folder_name`).
 
+The app keeps at most **3 backups** on Drive. Before each upload, it deletes older backups and keeps only the **2 newest** ones, then uploads the new file.
+
 ---
 
 ## Troubleshooting

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from datetime import datetime
 from pathlib import Path
 
 from google.auth.transport.requests import Request
@@ -9,7 +10,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-from config import credentials_path, token_path
+from config import KEEP_DRIVE_BACKUPS_BEFORE_UPLOAD, credentials_path, token_path
+from sync_engine import parse_backup_name
 
 SCOPES = ["https://www.googleapis.com/auth/drive.file"]
 
@@ -87,6 +89,34 @@ class DriveClient:
             .execute()
         )
         return bool(results.get("files"))
+
+    def list_backups_in_folder(self, folder_id: str) -> list[tuple[str, str]]:
+        query = f"'{folder_id}' in parents and trashed = false"
+        results = (
+            self.service.files()
+            .list(q=query, spaces="drive", fields="files(id, name)", pageSize=100)
+            .execute()
+        )
+
+        backups: list[tuple[str, str, datetime]] = []
+        for file_info in results.get("files", []):
+            timestamp = parse_backup_name(file_info["name"])
+            if timestamp is None:
+                continue
+            backups.append((file_info["id"], file_info["name"], timestamp))
+
+        backups.sort(key=lambda item: item[2], reverse=True)
+        return [(file_id, name) for file_id, name, _ in backups]
+
+    def prune_old_backups(
+        self, folder_id: str, keep: int = KEEP_DRIVE_BACKUPS_BEFORE_UPLOAD
+    ) -> list[str]:
+        backups = self.list_backups_in_folder(folder_id)
+        deleted: list[str] = []
+        for file_id, name in backups[keep:]:
+            self.service.files().delete(fileId=file_id).execute()
+            deleted.append(name)
+        return deleted
 
     def upload_file(
         self,

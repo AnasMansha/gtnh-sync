@@ -40,6 +40,8 @@ class SyncProgress:
             return f"Uploading {self.filename}"
         if self.phase == "checking":
             return "Checking Google Drive..."
+        if self.phase == "cleaning":
+            return "Removing old Drive backups..."
         if self.phase == "preparing":
             return "Preparing sync..."
         return "Sync in progress"
@@ -199,6 +201,10 @@ class SyncApp:
             folder_id = self.drive.get_or_create_folder(self.config.drive_folder_name)
             if self.drive.file_exists_in_folder(folder_id, backup.filename):
                 log.info("Already on Drive: %s", backup.filename)
+                self._set_progress("cleaning")
+                deleted = self.drive.prune_old_backups(folder_id)
+                for name in deleted:
+                    log.info("Removed old Drive backup: %s", name)
                 self.config.mark_synced(backup.filename)
                 if not daily:
                     self._notify(
@@ -216,6 +222,11 @@ class SyncApp:
                     return
                 if action != "sync":
                     return
+
+            self._set_progress("cleaning")
+            deleted = self.drive.prune_old_backups(folder_id)
+            for name in deleted:
+                log.info("Removed old Drive backup: %s", name)
 
             log.info("Uploading %s", backup.filename)
             self._set_progress("uploading", filename=backup.filename, percent=0)

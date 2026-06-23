@@ -10,6 +10,8 @@ DEFAULT_BACKUPS_PATH = (
     r"\instances\GT New Horizons\minecraft\backups"
 )
 DEFAULT_DRIVE_FOLDER = "GTNH Backups"
+MAX_DRIVE_BACKUPS = 3
+KEEP_DRIVE_BACKUPS_BEFORE_UPLOAD = MAX_DRIVE_BACKUPS - 1
 
 
 def app_data_dir() -> Path:
