@@ -16,6 +16,7 @@ env/
 build/
 dist/
 *.spec.bak
+logo.ico
 
 # OS and editor
 Thumbs.db

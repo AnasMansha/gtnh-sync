@@ -1,5 +1,9 @@
 # GTNH Sync
 
+<p align="center">
+  <img src="logo.png" alt="GTNH Sync logo" width="128">
+</p>
+
 **Automatically back up your GregTech: New Horizons world saves to Google Drive.**
 
 GTNH Sync is a small Windows app that lives in your system tray (near the clock). It finds your newest GTNH backup zip, asks if you want to upload it, and skips the upload if that file is already on Google Drive.
@@ -81,7 +85,7 @@ The app needs permission to upload files to _your_ Google Drive. You create a fr
 
 1. Double-click **`gtnh-sync.exe`**.
 2. A browser window opens — sign in with Google and click **Allow**.
-3. Look for a **green circle icon** in the system tray (click the `^` arrow near the clock if you don’t see it).
+3. Look for the **GTNH Sync icon** in the system tray (click the `^` arrow near the clock if you don’t see it).
 
 You’re done! The app will check for backups when Windows starts.
 
@@ -132,7 +136,7 @@ If you haven’t synced or skipped today, the app will:
    | **No**     | Skip for today (won’t ask again until tomorrow) |
    | **Cancel** | Decide later (will ask again today)             |
 
-### Tray menu (right-click the green icon)
+### Tray menu (right-click the tray icon)
 
 | Menu item               | What it does                               |
 | ----------------------- | ------------------------------------------ |
@@ -243,6 +247,7 @@ gtnh-sync/
 ├── drive_client.py      # Google Drive API
 ├── sync_engine.py       # Finds latest backup zip
 ├── config.py            # Settings and paths
+├── logo.png             # App and tray icon
 ├── build.bat            # Build script for Windows exe
 ├── .github/workflows/   # Auto-build release on version tags
 ├── requirements.txt     # Python dependencies

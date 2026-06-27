@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pystray
-from PIL import Image, ImageDraw
+from PIL import Image
 
 from config import APP_NAME, AppConfig, app_data_dir
 from drive_client import DriveClient
@@ -25,6 +25,11 @@ log = logging.getLogger(__name__)
 
 REG_PATH = r"Software\Microsoft\Windows\CurrentVersion\Run"
 ICON_SIZE = 64
+
+
+def _resource_path(name: str) -> Path:
+    base = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parent))
+    return base / name
 
 
 @dataclass
@@ -82,14 +87,8 @@ class SyncApp:
         self._icon.run()
 
     def _create_icon(self) -> Image.Image:
-        img = Image.new("RGBA", (ICON_SIZE, ICON_SIZE), (0, 0, 0, 0))
-        draw = ImageDraw.Draw(img)
-        draw.ellipse((4, 4, ICON_SIZE - 4, ICON_SIZE - 4), fill=(46, 125, 50, 255))
-        draw.polygon(
-            [(ICON_SIZE // 2, 14), (ICON_SIZE - 16, ICON_SIZE - 18), (16, ICON_SIZE - 18)],
-            fill=(255, 255, 255, 255),
-        )
-        return img
+        img = Image.open(_resource_path("logo.png")).convert("RGBA")
+        return img.resize((ICON_SIZE, ICON_SIZE), Image.Resampling.LANCZOS)
 
     def _executable_command(self) -> str:
         if getattr(sys, "frozen", False):
